@@ -1,0 +1,34 @@
+#!/usr/bin/make -f
+
+CFLAGS=-O2 -Wall -g
+INSTALL_PROGRAM=install
+
+%:
+	dh $@ --with autotools_dev
+
+override_dh_auto_configure:
+	./configure $(GPMCONFIG) --prefix=/usr --sysconfdir=/etc \
+		--mandir=/usr/share/man CFLAGS="$(CFLAGS)"
+
+override_dh_auto_test:
+	# make test is interactive; skip it
+
+override_dh_auto_clean:
+	dh_autotools-dev_updateconfig
+	if [ -e Makefile ]; then $(MAKE) distclean; fi
+	dh_autotools-dev_restoreconfig
+
+override_dh_auto_install:
+	$(MAKE) INSTALL_PREFIX=debian/pdmenu \
+		INSTALL_PROGRAM="$(INSTALL_PROGRAM)" install
+
+override_dh_installmenu:
+	dh_installmenu
+	install debian/menu-method-x11 debian/pdmenu/etc/menu-methods/pdmenu-x11
+	install debian/menu-method-vc  debian/pdmenu/etc/menu-methods/pdmenu-vc
+
+override_dh_installexamples:
+	dh_installexamples -X.in -X.pl examples/*
+
+override_dh_compress:
+	dh_compress -X examples/
