@@ -3,8 +3,15 @@ pdmenu-fork
 
 # installation centos / rhel / amazon linux
 yum install slang-devel
-git clone 
-cd pdmenu-fork
+
+
+git clone https://github.com/bbozhev/pdmenu-fork.git 
+
+
+cd pdmenu-fork 
+
+
+./configure && make && make install
 
 # Default binary location
 /usr/local/bin/pdmenu
